@@ -38,14 +38,10 @@ jobs:
         cd ..
 
     - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./latest.zip
-        asset_name: latest.zip
-        asset_content_type: application/zip
+        files: latest.zip
 
     - name: Upload Artifact for Deploy Job
       uses: actions/upload-artifact@v4
