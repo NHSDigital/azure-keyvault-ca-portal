@@ -1,0 +1,37 @@
+@model List<Azure.Security.KeyVault.Certificates.KeyVaultCertificateWithPolicy>
+
+@{
+    ViewData["Title"] = "Root CA Dashboard";
+}
+
+<h1>Root CA Dashboard</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Root CA</a>
+    <a asp-action="Import" class="btn btn-secondary">Import Root CA</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Thumbprint</th>
+            <th>Expires On</th>
+            <th>Enabled</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cert in Model)
+        {
+            <tr>
+                <td>@cert.Name</td>
+                <td>@(cert.Properties.X509Thumbprint != null ? BitConverter.ToString(cert.Properties.X509Thumbprint) : "N/A")</td>
+                <td>@cert.Properties.ExpiresOn</td>
+                <td>@cert.Properties.Enabled</td>
+                <td>
+                    <a asp-action="Sign" asp-route-id="@cert.Name" class="btn btn-success btn-sm">Inspect & Sign CSR</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

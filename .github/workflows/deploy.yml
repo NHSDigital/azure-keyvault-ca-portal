@@ -1,0 +1,54 @@
+name: Deploy to Azure
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+
+    - name: Publish
+      run: dotnet publish CaManager/CaManager.csproj -c Release -o ./publish
+
+    - name: Zip Release
+      run: |
+        cd publish
+        zip -r ../latest.zip .
+        cd ..
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./latest.zip
+        asset_name: latest.zip
+        asset_content_type: application/zip
+
+    - name: Upload Artifact for Deploy Job
+      uses: actions/upload-artifact@v4
+      with:
+        name: webapp-package
+        path: latest.zip

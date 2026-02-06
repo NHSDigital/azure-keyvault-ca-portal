@@ -1,0 +1,40 @@
+@model CaManager.Models.InspectCsrModel
+
+@{
+    ViewData["Title"] = "Inspect CSR";
+}
+
+<h2>Confirm & Sign</h2>
+<p>Step 2: Verify the CSR details before signing.</p>
+
+<div class="card mb-4">
+    <div class="card-header">CSR Details</div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Issuer</dt>
+            <dd class="col-sm-9">@Model.IssuerName</dd>
+
+            <dt class="col-sm-3">Subject DN</dt>
+            <dd class="col-sm-9">@Model.SubjectDn</dd>
+
+            <dt class="col-sm-3">Public Key</dt>
+            <dd class="col-sm-9">@Model.PublicKeyInfo</dd>
+
+            <dt class="col-sm-3">Algorithm</dt>
+            <dd class="col-sm-9">@Model.SignatureAlgorithm</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="ExecuteSign">
+    <input type="hidden" asp-for="IssuerName" />
+    <input type="hidden" asp-for="CsrContentBase64" />
+    
+    <div class="mb-3 col-md-4">
+        <label asp-for="ValidityMonths" class="form-label"></label>
+        <input asp-for="ValidityMonths" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-danger">Confirm & Sign</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
