@@ -29,7 +29,7 @@ A lightweight, secure ASP.NET Core 8 Blazor Server application for managing Azur
 
 ### Authentication (Entra ID)
 
-The application uses **Microsoft Entra ID** (formerly Azure AD) for user authentication. You must register an application in your Entra ID tenant.
+The application uses **Microsoft Entra ID** for user authentication. You must register an application in your Entra ID tenant.
 
 1.  **Create App Registration**:
     -   Go to Entra ID > App Registrations > New Registration.
@@ -84,7 +84,7 @@ terraform apply -var="resource_group_name=my-rg" -var="location=UK South"
 The App Service is configured with `WEBSITE_RUN_FROM_PACKAGE` pointing to the GitHub Release URL of this repository.
 
 ### Default Behavior
-by default, the Terraform configuration pulls the `latest.zip` artifact from the **latest** release of this repository.
+By default, the Terraform configuration pulls the `latest.zip` artifact from the **latest** release of this repository.
 
 > [!WARNING]
 > This means your deployment will automatically pick up the latest changes when the App Service restarts. If the maintainer releases a breaking change, your environment may break.
