@@ -13,7 +13,7 @@ param appTitle string
 param identityId string
 param identityClientId string
 
-resource plan 'Microsoft.Web/serverfarms@2021-02-01' = {
+resource plan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'plan-camanager'
   location: location
   kind: 'linux'
@@ -25,7 +25,7 @@ resource plan 'Microsoft.Web/serverfarms@2021-02-01' = {
   }
 }
 
-resource app 'Microsoft.Web/sites@2021-02-01' = {
+resource app 'Microsoft.Web/sites@2022-09-01' = {
   name: 'app-camanager-${suffix}'
   location: location
   kind: 'app,linux'
@@ -48,7 +48,7 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
   }
 }
 
-resource appSettings 'Microsoft.Web/sites/config@2021-02-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   parent: app
   name: 'appsettings'
   properties: {
@@ -66,7 +66,7 @@ resource appSettings 'Microsoft.Web/sites/config@2021-02-01' = {
 }
 
 // Private Endpoint
-resource peApp 'Microsoft.Network/privateEndpoints@2021-02-01' = {
+resource peApp 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   name: 'pe-app-camanager'
   location: location
   properties: {

@@ -1,6 +1,6 @@
 param location string
 
-resource id 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource id 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: 'id-camanager'
   location: location
 }

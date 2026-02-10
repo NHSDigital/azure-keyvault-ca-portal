@@ -1,7 +1,7 @@
 param location string
 param suffix string
 
-resource log 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+resource log 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: 'log-camanager-${suffix}'
   location: location
   properties: {

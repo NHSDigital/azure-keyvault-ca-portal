@@ -6,7 +6,7 @@ param subnetPrefixes object = {
   pe: '172.120.0.32/27'
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
   location: location
   properties: {
@@ -45,7 +45,7 @@ resource pdnsVault 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource pdnsBlob 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.blob.core.windows.net'
+  name: 'privatelink.blob.${environment().suffixes.storage}'
   location: 'global'
 }
 

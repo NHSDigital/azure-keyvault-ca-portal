@@ -4,7 +4,7 @@ param snetPeId string
 param pdnsBlobId string
 param appIdentityPrincipalId string
 
-resource st 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource st 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: 'stcamanager${suffix}'
   location: location
   sku: {
@@ -12,22 +12,23 @@ resource st 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
   kind: 'StorageV2'
   properties: {
+    minimumTlsVersion: 'TLS1_2'
     publicNetworkAccess: 'Disabled'
   }
 }
 
-resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2021-04-01' = {
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2023-01-01' = {
   parent: st
   name: 'default'
 }
 
-resource auditTable 'Microsoft.Storage/storageAccounts/tableServices/tables@2021-04-01' = {
+resource auditTable 'Microsoft.Storage/storageAccounts/tableServices/tables@2023-01-01' = {
   parent: tableService
   name: 'auditlogs'
 }
 
 // Private Endpoint
-resource peBlob 'Microsoft.Network/privateEndpoints@2021-02-01' = {
+resource peBlob 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   name: 'pe-st-blob'
   location: location
   properties: {
@@ -48,7 +49,7 @@ resource peBlob 'Microsoft.Network/privateEndpoints@2021-02-01' = {
   }
 }
 
-resource peBlobDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-02-01' = {
+resource peBlobDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = {
   parent: peBlob
   name: 'pdns-blob-group'
   properties: {
@@ -73,7 +74,7 @@ var roleStorageTableDataContributor = subscriptionResourceId(
   '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d'
 )
 
-resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: st
   name: guid(st.id, appIdentityPrincipalId, roleStorageBlobDataContributor)
   properties: {
@@ -83,7 +84,7 @@ resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2020-04-01-
   }
 }
 
-resource roleAssignmentTable 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignmentTable 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: st
   name: guid(st.id, appIdentityPrincipalId, roleStorageTableDataContributor)
   properties: {

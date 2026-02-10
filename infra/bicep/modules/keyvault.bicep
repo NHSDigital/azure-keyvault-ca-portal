@@ -5,8 +5,8 @@ param pdnsVaultId string
 param appIdentityPrincipalId string
 param tenantId string
 
-resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
-  name: 'kv-camanager-${suffix}'
+resource kv 'Microsoft.KeyVault/vaults@2023-02-01' = {
+  name: 'kv-cam-${suffix}'
   location: location
   properties: {
     tenantId: tenantId
@@ -22,7 +22,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
 }
 
 // Private Endpoint
-resource peKv 'Microsoft.Network/privateEndpoints@2021-02-01' = {
+resource peKv 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   name: 'pe-kv-camanager'
   location: location
   properties: {
@@ -43,7 +43,7 @@ resource peKv 'Microsoft.Network/privateEndpoints@2021-02-01' = {
   }
 }
 
-resource peKvDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-02-01' = {
+resource peKvDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = {
   parent: peKv
   name: 'pdns-kv-group'
   properties: {
@@ -64,7 +64,7 @@ var roleKeyVaultAdministrator = subscriptionResourceId(
   '00482a5a-887f-4fb3-b363-3b7fe8e74483'
 )
 
-resource roleAssignmentKvAdmin 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignmentKvAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: kv
   name: guid(kv.id, appIdentityPrincipalId, roleKeyVaultAdministrator)
   properties: {

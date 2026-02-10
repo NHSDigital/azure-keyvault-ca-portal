@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param environmentName string = 'dev'
+
 param githubRepo string = 'celloza/azure-keyvault-ca-portal'
 param appTitle string
 param vwanHubName string
