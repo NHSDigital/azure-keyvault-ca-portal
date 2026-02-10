@@ -14,13 +14,18 @@ namespace CaManager.Services
         private readonly KeyClient _keyClient;
         private readonly IConfiguration _configuration;
 
+
+        private readonly IAuditService _auditService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyVaultService"/> class.
         /// </summary>
         /// <param name="configuration">The application configuration containing KeyVault settings.</param>
-        public KeyVaultService(IConfiguration configuration)
+        /// <param name="auditService">The audit service for logging operations.</param>
+        public KeyVaultService(IConfiguration configuration, IAuditService auditService)
         {
             _configuration = configuration;
+            _auditService = auditService;
             var kvUrl = _configuration["KeyVault:Url"];
             // Using DefaultAzureCredential - supports Managed Identity, CLI, VS, etc.
             var credential = new DefaultAzureCredential();
@@ -81,7 +86,11 @@ namespace CaManager.Services
             // We will proceed with this default policy.
 
             var op = await _certificateClient.StartCreateCertificateAsync($"root-{Guid.NewGuid().ToString().Substring(0, 8)}", policy);
-            return await op.WaitForCompletionAsync();
+            var result = await op.WaitForCompletionAsync();
+            
+            await _auditService.LogAsync("CA", "CreateRootCa", $"Created Root CA with subject {subjectName}", "System"); // User should be passed in ideally
+            
+            return result;
         }
 
         /// <inheritdoc/>
@@ -92,7 +101,9 @@ namespace CaManager.Services
                 Password = password,
                 Policy = new CertificatePolicy(WellKnownIssuerNames.Self, "CN=Imported Root")
             };
-            return await _certificateClient.ImportCertificateAsync(importOptions);
+            var result = await _certificateClient.ImportCertificateAsync(importOptions);
+            await _auditService.LogAsync("CA", "ImportRootCa", $"Imported Root CA {certificateName}", "System");
+            return result;
         }
 
         /// <inheritdoc/>
@@ -138,6 +149,9 @@ namespace CaManager.Services
                 notAfter,
                 serialNumber);
 
+            // 7. Log Audit
+            await _auditService.LogAsync("CA", "SignCsr", $"Signed certificate for {issuerCert.SubjectName} valid for {validityMonths} months", "System");
+
             return signedCert;
         }
 
@@ -146,6 +160,7 @@ namespace CaManager.Services
         {
             var op = await _certificateClient.StartDeleteCertificateAsync(name);
             await op.WaitForCompletionAsync();
+            await _auditService.LogAsync("CA", "DeleteCertificate", $"Deleted certificate {name}", "System");
             // Purge? Ideally yes for a clean delete in non-production, but user didn't ask for purge.
             // Soft-delete is standard in KV. We'll stick to Delete.
         }

@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "plan" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Linux"
-  sku_name            = "B1"
+  sku_name            = "B3"
 }
 
 resource "azurerm_linux_web_app" "app" {
@@ -28,13 +28,16 @@ resource "azurerm_linux_web_app" "app" {
   key_vault_reference_identity_id = azurerm_user_assigned_identity.app_identity.id
 
   app_settings = {
-    "KeyVault__Url"                    = azurerm_key_vault.kv.vault_uri
-    "AzureAd__TenantId"                = data.azurerm_client_config.current.tenant_id
-    "WEBSITE_RUN_FROM_PACKAGE"         = "https://github.com/${var.github_repo}/releases/latest/download/latest.zip"
-    "AzureWebJobsStorage__accountName" = azurerm_storage_account.st.name
-    "AzureWebJobsStorage__credential"  = "managedidentity"
-    "AzureWebJobsStorage__clientId"    = azurerm_user_assigned_identity.app_identity.client_id
-    "AppTitle"                         = var.app_title
+    "KeyVault__Url"                         = azurerm_key_vault.kv.vault_uri
+    "AzureAd__TenantId"                     = data.azurerm_client_config.current.tenant_id
+    "WEBSITE_RUN_FROM_PACKAGE"              = "https://github.com/${var.github_repo}/releases/latest/download/latest.zip"
+    "AzureWebJobsStorage__accountName"      = azurerm_storage_account.st.name
+    "AzureWebJobsStorage__credential"       = "managedidentity"
+    "AzureWebJobsStorage__clientId"         = azurerm_user_assigned_identity.app_identity.client_id
+    "AppTitle"                              = var.app_title
+    "ApplicationInsights__ConnectionString" = azurerm_application_insights.app.connection_string
+    "Storage__AuditTableName"               = azurerm_storage_table.audit.name
+    "Storage__AccountName"                  = azurerm_storage_account.st.name
   }
 }
 

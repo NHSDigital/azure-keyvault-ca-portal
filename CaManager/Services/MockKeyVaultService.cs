@@ -14,12 +14,15 @@ namespace CaManager.Services
     {
         private readonly List<KeyVaultCertificateWithPolicy> _certificates = new();
 
+        private readonly IAuditService _auditService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MockKeyVaultService"/> class.
         /// Seeds the service with a dummy certificate.
         /// </summary>
-        public MockKeyVaultService()
+        public MockKeyVaultService(IAuditService auditService)
         {
+            _auditService = auditService;
             // Seed with a dummy mock certificate
             _certificates.Add(CreateMockCertificate("mock-root-ca", "CN=Mock Root CA"));
         }
@@ -42,16 +45,19 @@ namespace CaManager.Services
         }
 
         /// <inheritdoc/>
-        public Task<KeyVaultCertificateWithPolicy> CreateRootCaAsync(string subjectName, int validityMonths, int keySize)
+        public async Task<KeyVaultCertificateWithPolicy> CreateRootCaAsync(string subjectName, int validityMonths, int keySize)
         {
             var name = $"root-{Guid.NewGuid().ToString().Substring(0, 8)}";
             var cert = CreateMockCertificate(name, subjectName);
             _certificates.Add(cert);
-            return Task.FromResult(cert);
+            
+            await _auditService.LogAsync("CA", "CreateRootCa", $"Created Mock Root CA {subjectName}", "DevUser");
+
+            return cert;
         }
 
         /// <inheritdoc/>
-        public Task<KeyVaultCertificateWithPolicy> ImportRootCaAsync(string certificateName, byte[] pfxBytes, string? password)
+        public async Task<KeyVaultCertificateWithPolicy> ImportRootCaAsync(string certificateName, byte[] pfxBytes, string? password)
         {
             // Parse the PFX to get actual details
             using var certObj = new X509Certificate2(pfxBytes, password, X509KeyStorageFlags.Exportable);
@@ -63,11 +69,14 @@ namespace CaManager.Services
                 certObj.NotAfter
             );
             _certificates.Add(cert);
-            return Task.FromResult(cert);
+            
+            await _auditService.LogAsync("CA", "ImportRootCa", $"Imported Mock Root CA {certificateName}", "DevUser");
+            
+            return cert;
         }
 
         /// <inheritdoc/>
-        public Task<X509Certificate2> SignCsrAsync(string issuerCertName, byte[] csrBytes, int validityMonths)
+        public async Task<X509Certificate2> SignCsrAsync(string issuerCertName, byte[] csrBytes, int validityMonths)
         {
             // 1. Get the Issuer details
             var issuerCert = _certificates.FirstOrDefault(c => c.Name == issuerCertName);
@@ -101,18 +110,20 @@ namespace CaManager.Services
                 serialNumber
             );
 
-            return Task.FromResult(cert);
+            await _auditService.LogAsync("CA", "SignCsr", $"Signed Mock certificate for {issuerX509.SubjectName}", "DevUser");
+
+            return cert;
         }
 
         /// <inheritdoc/>
-        public Task DeleteCertificateAsync(string name)
+        public async Task DeleteCertificateAsync(string name)
         {
             var cert = _certificates.FirstOrDefault(c => c.Name == name);
             if (cert != null)
             {
                 _certificates.Remove(cert);
+                await _auditService.LogAsync("CA", "DeleteCertificate", $"Deleted Mock certificate {name}", "DevUser");
             }
-            return Task.CompletedTask;
         }
 
         private KeyVaultCertificateWithPolicy CreateMockCertificate(string name, string subjectName, string? thumbprintHex = null, DateTime? expires = null)

@@ -54,6 +54,13 @@ builder.Services.AddSingleton<IKeyVaultService, KeyVaultService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IVersionCheckService, GithubVersionCheckService>();
+builder.Services.AddSingleton<IAuditService, TableAuditService>();
+
+var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+if (!string.IsNullOrEmpty(appInsightsConnectionString))
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
 
 var app = builder.Build();
 

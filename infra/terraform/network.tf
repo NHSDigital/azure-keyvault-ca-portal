@@ -2,14 +2,14 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-camanager"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  address_space       = ["10.0.0.0/26"]
+  address_space       = var.vnet_address_space
 }
 
 resource "azurerm_subnet" "snet_app" {
   name                 = "snet-app"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.0/27"]
+  address_prefixes     = [var.subnet_prefixes["app"]]
 
   delegation {
     name = "delegation"
@@ -24,7 +24,7 @@ resource "azurerm_subnet" "snet_pe" {
   name                 = "snet-pe"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.32/27"]
+  address_prefixes     = [var.subnet_prefixes["pe"]]
 }
 
 resource "azurerm_private_dns_zone" "pdns_vault" {

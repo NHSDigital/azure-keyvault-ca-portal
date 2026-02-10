@@ -31,3 +31,33 @@ resource "azurerm_role_assignment" "st_blob" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.app_identity.principal_id
 }
+
+resource "time_sleep" "wait_for_rbac" {
+  create_duration = "60s"
+
+  depends_on = [azurerm_role_assignment.st_table_deployment_user]
+}
+
+resource "azurerm_storage_table" "audit" {
+  name                 = "auditlogs"
+  storage_account_name = azurerm_storage_account.st.name
+  depends_on           = [time_sleep.wait_for_rbac]
+}
+
+resource "azurerm_role_assignment" "st_table" {
+  scope                = azurerm_storage_account.st.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.app_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "st_table_deployment_user" {
+  scope                = azurerm_storage_account.st.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "st_blob_user" {
+  scope                = azurerm_storage_account.st.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
