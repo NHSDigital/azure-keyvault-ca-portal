@@ -59,16 +59,16 @@ resource peKvDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2
 }
 
 // RBAC
-var roleKeyVaultAdministrator = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-)
+resource roleKeyVaultAdministrator 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+}
 
 resource roleAssignmentKvAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: kv
-  name: guid(kv.id, appIdentityPrincipalId, roleKeyVaultAdministrator)
+  name: guid(kv.id, appIdentityPrincipalId, roleKeyVaultAdministrator.id)
   properties: {
-    roleDefinitionId: roleKeyVaultAdministrator
+    roleDefinitionId: roleKeyVaultAdministrator.id
     principalId: appIdentityPrincipalId
     principalType: 'ServicePrincipal'
   }

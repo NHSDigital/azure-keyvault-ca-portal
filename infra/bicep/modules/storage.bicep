@@ -65,20 +65,21 @@ resource peBlobDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups
 }
 
 // RBAC
-var roleStorageBlobDataContributor = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-)
-var roleStorageTableDataContributor = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d'
-)
+resource roleStorageBlobDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+}
+
+resource roleStorageTableDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d'
+}
 
 resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: st
-  name: guid(st.id, appIdentityPrincipalId, roleStorageBlobDataContributor)
+  name: guid(st.id, appIdentityPrincipalId, roleStorageBlobDataContributor.id)
   properties: {
-    roleDefinitionId: roleStorageBlobDataContributor
+    roleDefinitionId: roleStorageBlobDataContributor.id
     principalId: appIdentityPrincipalId
     principalType: 'ServicePrincipal'
   }
@@ -86,9 +87,9 @@ resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2022-04-01'
 
 resource roleAssignmentTable 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: st
-  name: guid(st.id, appIdentityPrincipalId, roleStorageTableDataContributor)
+  name: guid(st.id, appIdentityPrincipalId, roleStorageTableDataContributor.id)
   properties: {
-    roleDefinitionId: roleStorageTableDataContributor
+    roleDefinitionId: roleStorageTableDataContributor.id
     principalId: appIdentityPrincipalId
     principalType: 'ServicePrincipal'
   }
