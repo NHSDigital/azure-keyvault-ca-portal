@@ -3,6 +3,8 @@ param suffix string
 param snetPeId string
 param pdnsBlobId string
 param appIdentityPrincipalId string
+param storageTableRoleDefinitionId string = '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d' // Standard Azure ID for Storage Table Data Contributor
+param storageBlobRoleDefinitionId string = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Standard Azure ID for Storage Blob Data Contributor
 
 resource st 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: 'stcamanager${suffix}'
@@ -67,12 +69,12 @@ resource peBlobDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups
 // RBAC
 resource roleStorageBlobDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   scope: subscription()
-  name: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+  name: storageBlobRoleDefinitionId
 }
 
 resource roleStorageTableDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   scope: subscription()
-  name: '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
+  name: storageTableRoleDefinitionId
 }
 
 resource roleAssignmentBlob 'Microsoft.Authorization/roleAssignments@2022-04-01' = {

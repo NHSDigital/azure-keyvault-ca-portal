@@ -4,6 +4,7 @@ param snetPeId string
 param pdnsVaultId string
 param appIdentityPrincipalId string
 param tenantId string
+param keyVaultAdminRoleDefinitionId string = '00482a5a-887f-4fb3-b363-3b7fe8e74483' // Standard Azure ID for Key Vault Administrator
 
 resource kv 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: 'kv-cam-${suffix}'
@@ -61,7 +62,7 @@ resource peKvDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2
 // RBAC
 resource roleKeyVaultAdministrator 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   scope: subscription()
-  name: '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+  name: keyVaultAdminRoleDefinitionId
 }
 
 resource roleAssignmentKvAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
