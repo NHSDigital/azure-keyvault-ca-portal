@@ -3,6 +3,7 @@ name: Deploy to Azure
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
