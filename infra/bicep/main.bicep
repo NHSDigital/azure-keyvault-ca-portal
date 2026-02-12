@@ -1,17 +1,17 @@
 param location string = resourceGroup().location
 
 param githubRepo string = 'NHSDigital/azure-keyvault-ca-portal'
-param appTitle string
-param vwanHubName string
-param vwanHubRg string
-param connectivitySubscriptionId string
-param connectivityResourceGroupName string
+param appTitle string = 'NHS App CA Manager'
+param vwanHubName string = 'nhsapp-commonservicesuks-vhub'
+param vwanHubRg string = 'nhsapp-commonservicesuks-vwan'
+param connectivitySubscriptionId string = '056249da-00c0-46c2-bd8b-081086db4c67'
+param connectivityResourceGroupName string = 'nhsapp-commonservicesuks-vwan'
 
 var suffix = uniqueString(resourceGroup().id)
 
 // Role Definition IDs (Defaults are standard Azure IDs)
 // Users with non-standard IDs must override these parameters
-param storageTableRoleDefinitionId string = '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d'
+param storageTableRoleDefinitionId string = '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
 param storageBlobRoleDefinitionId string = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
 param keyVaultAdminRoleDefinitionId string = '00482a5a-887f-4fb3-b363-3b7fe8e74483'
 
