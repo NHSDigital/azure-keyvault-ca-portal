@@ -55,6 +55,7 @@ builder.Services.AddSingleton<IKeyVaultService, KeyVaultService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IVersionCheckService, GithubVersionCheckService>();
 builder.Services.AddSingleton<IAuditService, TableAuditService>();
+builder.Services.AddHealthChecks();
 
 var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
 if (!string.IsNullOrEmpty(appInsightsConnectionString))
@@ -82,6 +83,7 @@ app.UseAuthorization();
 app.MapControllers(); // For Identity/API if exists
 app.MapRazorPages();
 app.MapBlazorHub();
+app.MapHealthChecks("/health").AllowAnonymous();
 app.MapFallbackToPage("/_Host");
 
 app.Run();

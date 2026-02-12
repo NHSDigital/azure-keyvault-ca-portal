@@ -38,6 +38,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|8.0'
       vnetRouteAllEnabled: true
+      healthCheckPath: '/health'
     }
     keyVaultReferenceIdentity: identityId
   }
