@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "11190332909856265808"
+      "templateHash": "15062099220065097273"
     }
   },
   "parameters": {
@@ -747,7 +747,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "2453137620203140071"
+              "templateHash": "6858320728309883780"
             }
           },
           "parameters": {
@@ -824,7 +824,8 @@
                 "virtualNetworkSubnetId": "[parameters('snetAppId')]",
                 "siteConfig": {
                   "linuxFxVersion": "DOTNETCORE|8.0",
-                  "vnetRouteAllEnabled": true
+                  "vnetRouteAllEnabled": true,
+                  "healthCheckPath": "/health"
                 },
                 "keyVaultReferenceIdentity": "[parameters('identityId')]"
               },
@@ -845,7 +846,7 @@
               "properties": {
                 "KeyVault__Url": "[parameters('keyVaultUrl')]",
                 "AzureAd__TenantId": "[parameters('tenantId')]",
-                "WEBSITE_RUN_FROM_PACKAGE": "[format('https://github.com/{0}/releases/latest/download/latest.zip', parameters('githubRepo'))]",
+                "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/celloza/azure-keyvault-ca-portal/releases/download/v0.0.3/latest.zip",
                 "AzureWebJobsStorage__accountName": "[parameters('storageAccountName')]",
                 "AzureWebJobsStorage__credential": "managedidentity",
                 "AzureWebJobsStorage__clientId": "[parameters('identityClientId')]",

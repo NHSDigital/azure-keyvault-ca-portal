@@ -1,6 +1,7 @@
 # Azure Key Vault CA Manager
 
 [![Build Status](https://github.com/celloza/azure-keyvault-ca-portal/actions/workflows/deploy.yml/badge.svg)](https://github.com/celloza/azure-keyvault-ca-portal/actions/workflows/deploy.yml)
+
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FNHSDigital%2Fazure-keyvault-ca-portal%2Fmain%2Finfra%2Fazuredeploy.json)
 
 > [!IMPORTANT]

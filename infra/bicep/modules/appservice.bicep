@@ -56,7 +56,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   properties: {
     KeyVault__Url: keyVaultUrl
     AzureAd__TenantId: tenantId
-    WEBSITE_RUN_FROM_PACKAGE: 'https://github.com/${githubRepo}/releases/latest/download/latest.zip'
+    WEBSITE_RUN_FROM_PACKAGE: 'https://github.com/celloza/azure-keyvault-ca-portal/releases/download/v0.0.3/latest.zip'
     AzureWebJobsStorage__accountName: storageAccountName
     AzureWebJobsStorage__credential: 'managedidentity'
     AzureWebJobsStorage__clientId: identityClientId
