@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 
-param githubRepo string = 'celloza/azure-keyvault-ca-portal'
+param githubRepo string = 'NHSDigital/azure-keyvault-ca-portal'
 param appTitle string
 param vwanHubName string
 param vwanHubRg string

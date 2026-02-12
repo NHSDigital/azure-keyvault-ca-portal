@@ -1,7 +1,7 @@
 # Azure Key Vault CA Manager
 
 [![Build Status](https://github.com/celloza/azure-keyvault-ca-portal/actions/workflows/deploy.yml/badge.svg)](https://github.com/celloza/azure-keyvault-ca-portal/actions/workflows/deploy.yml)
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcelloza%2Fazure-keyvault-ca-portal%2Fmain%2Finfra%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FNHSDigital%2Fazure-keyvault-ca-portal%2Fmain%2Finfra%2Fazuredeploy.json)
 
 > [!IMPORTANT]
 > **NHS App Fork**: This repository is a private fork maintained by **NHSDigital** for the NHS App project. It contains specific infrastructure configurations (e.g., Central Private DNS integration) that differ from the upstream [celloza/azure-keyvault-ca-portal](https://github.com/celloza/azure-keyvault-ca-portal).
