@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "5674487669375829637"
+      "templateHash": "14913825732800585783"
     }
   },
   "parameters": {
@@ -24,6 +24,12 @@
       "type": "string"
     },
     "vwanHubRg": {
+      "type": "string"
+    },
+    "connectivitySubscriptionId": {
+      "type": "string"
+    },
+    "connectivityResourceGroupName": {
       "type": "string"
     },
     "storageTableRoleDefinitionId": {
@@ -64,7 +70,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "17262197718754793083"
+              "templateHash": "865711804470673774"
             }
           },
           "parameters": {
@@ -122,72 +128,6 @@
                   }
                 ]
               }
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones",
-              "apiVersion": "2020-06-01",
-              "name": "privatelink.vaultcore.azure.net",
-              "location": "global"
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones",
-              "apiVersion": "2020-06-01",
-              "name": "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
-              "location": "global"
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones",
-              "apiVersion": "2020-06-01",
-              "name": "privatelink.azurewebsites.net",
-              "location": "global"
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2020-06-01",
-              "name": "[format('{0}/{1}', 'privatelink.vaultcore.azure.net', 'link-vault')]",
-              "location": "global",
-              "properties": {
-                "registrationEnabled": false,
-                "virtualNetwork": {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2020-06-01",
-              "name": "[format('{0}/{1}', format('privatelink.blob.{0}', environment().suffixes.storage), 'link-blob')]",
-              "location": "global",
-              "properties": {
-                "registrationEnabled": false,
-                "virtualNetwork": {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', format('privatelink.blob.{0}', environment().suffixes.storage))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2020-06-01",
-              "name": "[format('{0}/{1}', 'privatelink.azurewebsites.net', 'link-app')]",
-              "location": "global",
-              "properties": {
-                "registrationEnabled": false,
-                "virtualNetwork": {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.azurewebsites.net')]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-              ]
             }
           ],
           "outputs": {
@@ -202,18 +142,6 @@
             "snetPeId": {
               "type": "string",
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), 'snet-pe')]"
-            },
-            "pdnsVaultId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]"
-            },
-            "pdnsBlobId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/privateDnsZones', format('privatelink.blob.{0}', environment().suffixes.storage))]"
-            },
-            "pdnsAppId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.azurewebsites.net')]"
             }
           }
         }
@@ -420,8 +348,11 @@
           "snetPeId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.snetPeId.value]"
           },
-          "pdnsBlobId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.pdnsBlobId.value]"
+          "connectivitySubscriptionId": {
+            "value": "[parameters('connectivitySubscriptionId')]"
+          },
+          "connectivityResourceGroupName": {
+            "value": "[parameters('connectivityResourceGroupName')]"
           },
           "appIdentityPrincipalId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-identity'), '2025-04-01').outputs.principalId.value]"
@@ -440,7 +371,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "10304662702142199681"
+              "templateHash": "17760702822919454432"
             }
           },
           "parameters": {
@@ -453,7 +384,10 @@
             "snetPeId": {
               "type": "string"
             },
-            "pdnsBlobId": {
+            "connectivitySubscriptionId": {
+              "type": "string"
+            },
+            "connectivityResourceGroupName": {
               "type": "string"
             },
             "appIdentityPrincipalId": {
@@ -533,7 +467,7 @@
                   {
                     "name": "privatelink-blob-core-windows-net",
                     "properties": {
-                      "privateDnsZoneId": "[parameters('pdnsBlobId')]"
+                      "privateDnsZoneId": "[resourceId(parameters('connectivitySubscriptionId'), parameters('connectivityResourceGroupName'), 'Microsoft.Network/privateDnsZones', format('privatelink.blob.{0}', environment().suffixes.storage))]"
                     }
                   }
                 ]
@@ -603,8 +537,11 @@
           "snetPeId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.snetPeId.value]"
           },
-          "pdnsVaultId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.pdnsVaultId.value]"
+          "connectivitySubscriptionId": {
+            "value": "[parameters('connectivitySubscriptionId')]"
+          },
+          "connectivityResourceGroupName": {
+            "value": "[parameters('connectivityResourceGroupName')]"
           },
           "appIdentityPrincipalId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-identity'), '2025-04-01').outputs.principalId.value]"
@@ -623,7 +560,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "10594458460858803610"
+              "templateHash": "10480297584745918938"
             }
           },
           "parameters": {
@@ -636,7 +573,10 @@
             "snetPeId": {
               "type": "string"
             },
-            "pdnsVaultId": {
+            "connectivitySubscriptionId": {
+              "type": "string"
+            },
+            "connectivityResourceGroupName": {
               "type": "string"
             },
             "appIdentityPrincipalId": {
@@ -702,7 +642,7 @@
                   {
                     "name": "privatelink-vaultcore-azure-net",
                     "properties": {
-                      "privateDnsZoneId": "[parameters('pdnsVaultId')]"
+                      "privateDnsZoneId": "[resourceId(parameters('connectivitySubscriptionId'), parameters('connectivityResourceGroupName'), 'Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]"
                     }
                   }
                 ]
@@ -761,8 +701,11 @@
           "snetPeId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.snetPeId.value]"
           },
-          "pdnsAppId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-network'), '2025-04-01').outputs.pdnsAppId.value]"
+          "connectivitySubscriptionId": {
+            "value": "[parameters('connectivitySubscriptionId')]"
+          },
+          "connectivityResourceGroupName": {
+            "value": "[parameters('connectivityResourceGroupName')]"
           },
           "appInsightsConnectionString": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-logging'), '2025-04-01').outputs.appInsightsConnectionString.value]"
@@ -799,7 +742,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "4332839011812069545"
+              "templateHash": "2453137620203140071"
             }
           },
           "parameters": {
@@ -815,7 +758,10 @@
             "snetPeId": {
               "type": "string"
             },
-            "pdnsAppId": {
+            "connectivitySubscriptionId": {
+              "type": "string"
+            },
+            "connectivityResourceGroupName": {
               "type": "string"
             },
             "keyVaultUrl": {
@@ -941,7 +887,7 @@
                   {
                     "name": "privatelink-azurewebsites-net",
                     "properties": {
-                      "privateDnsZoneId": "[parameters('pdnsAppId')]"
+                      "privateDnsZoneId": "[resourceId(parameters('connectivitySubscriptionId'), parameters('connectivityResourceGroupName'), 'Microsoft.Network/privateDnsZones', 'privatelink.azurewebsites.net')]"
                     }
                   }
                 ]

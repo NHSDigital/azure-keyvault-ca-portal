@@ -1,7 +1,8 @@
 param location string
 param suffix string
 param snetPeId string
-param pdnsBlobId string
+param connectivitySubscriptionId string
+param connectivityResourceGroupName string
 param appIdentityPrincipalId string
 param storageTableRoleDefinitionId string = '0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d' // Standard Azure ID for Storage Table Data Contributor
 param storageBlobRoleDefinitionId string = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Standard Azure ID for Storage Blob Data Contributor
@@ -59,7 +60,12 @@ resource peBlobDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups
       {
         name: 'privatelink-blob-core-windows-net'
         properties: {
-          privateDnsZoneId: pdnsBlobId
+          privateDnsZoneId: resourceId(
+            connectivitySubscriptionId,
+            connectivityResourceGroupName,
+            'Microsoft.Network/privateDnsZones',
+            'privatelink.blob.${environment().suffixes.storage}'
+          )
         }
       }
     ]

@@ -4,6 +4,8 @@ param githubRepo string = 'celloza/azure-keyvault-ca-portal'
 param appTitle string
 param vwanHubName string
 param vwanHubRg string
+param connectivitySubscriptionId string
+param connectivityResourceGroupName string
 
 var suffix = uniqueString(resourceGroup().id)
 
@@ -50,7 +52,8 @@ module storage 'modules/storage.bicep' = {
     location: location
     suffix: suffix
     snetPeId: network.outputs.snetPeId
-    pdnsBlobId: network.outputs.pdnsBlobId
+    connectivitySubscriptionId: connectivitySubscriptionId
+    connectivityResourceGroupName: connectivityResourceGroupName
     appIdentityPrincipalId: identity.outputs.principalId
     storageTableRoleDefinitionId: storageTableRoleDefinitionId
     storageBlobRoleDefinitionId: storageBlobRoleDefinitionId
@@ -63,7 +66,8 @@ module keyvault 'modules/keyvault.bicep' = {
     location: location
     suffix: suffix
     snetPeId: network.outputs.snetPeId
-    pdnsVaultId: network.outputs.pdnsVaultId
+    connectivitySubscriptionId: connectivitySubscriptionId
+    connectivityResourceGroupName: connectivityResourceGroupName
     appIdentityPrincipalId: identity.outputs.principalId
     tenantId: subscription().tenantId
     keyVaultAdminRoleDefinitionId: keyVaultAdminRoleDefinitionId
@@ -77,7 +81,8 @@ module appService 'modules/appservice.bicep' = {
     suffix: suffix
     snetAppId: network.outputs.snetAppId
     snetPeId: network.outputs.snetPeId
-    pdnsAppId: network.outputs.pdnsAppId
+    connectivitySubscriptionId: connectivitySubscriptionId
+    connectivityResourceGroupName: connectivityResourceGroupName
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     tenantId: subscription().tenantId
     githubRepo: githubRepo

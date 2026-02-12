@@ -2,7 +2,8 @@ param location string
 param suffix string
 param snetAppId string
 param snetPeId string
-param pdnsAppId string
+param connectivitySubscriptionId string
+param connectivityResourceGroupName string
 param keyVaultUrl string
 param tenantId string
 param githubRepo string
@@ -95,7 +96,12 @@ resource peAppDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@
       {
         name: 'privatelink-azurewebsites-net'
         properties: {
-          privateDnsZoneId: pdnsAppId
+          privateDnsZoneId: resourceId(
+            connectivitySubscriptionId,
+            connectivityResourceGroupName,
+            'Microsoft.Network/privateDnsZones',
+            'privatelink.azurewebsites.net'
+          )
         }
       }
     ]

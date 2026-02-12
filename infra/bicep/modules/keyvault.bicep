@@ -1,7 +1,8 @@
 param location string
 param suffix string
 param snetPeId string
-param pdnsVaultId string
+param connectivitySubscriptionId string
+param connectivityResourceGroupName string
 param appIdentityPrincipalId string
 param tenantId string
 param keyVaultAdminRoleDefinitionId string = '00482a5a-887f-4fb3-b363-3b7fe8e74483' // Standard Azure ID for Key Vault Administrator
@@ -52,7 +53,12 @@ resource peKvDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2
       {
         name: 'privatelink-vaultcore-azure-net'
         properties: {
-          privateDnsZoneId: pdnsVaultId
+          privateDnsZoneId: resourceId(
+            connectivitySubscriptionId,
+            connectivityResourceGroupName,
+            'Microsoft.Network/privateDnsZones',
+            'privatelink.vaultcore.azure.net'
+          )
         }
       }
     ]
