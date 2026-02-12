@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14913825732800585783"
+      "templateHash": "11190332909856265808"
     }
   },
   "parameters": {
@@ -15,26 +15,31 @@
     },
     "githubRepo": {
       "type": "string",
-      "defaultValue": "celloza/azure-keyvault-ca-portal"
+      "defaultValue": "NHSDigital/azure-keyvault-ca-portal"
     },
     "appTitle": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "NHS App CA Manager"
     },
     "vwanHubName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "nhsapp-commonservicesuks-vhub"
     },
     "vwanHubRg": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "nhsapp-commonservicesuks-vwan"
     },
     "connectivitySubscriptionId": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "056249da-00c0-46c2-bd8b-081086db4c67"
     },
     "connectivityResourceGroupName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "nhsapp-commonservicesuks-vwan"
     },
     "storageTableRoleDefinitionId": {
       "type": "string",
-      "defaultValue": "0a9a7e1f-b9d0-4cc4-a60d-0319cd74161d"
+      "defaultValue": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3"
     },
     "storageBlobRoleDefinitionId": {
       "type": "string",
